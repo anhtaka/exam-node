@@ -1,0 +1,178 @@
+openapi: '3.0.0'
+info:
+  title: サンプルAPI
+  description: API仕様サンプル用
+  termsOfService: http://example.com/terms/
+  contact:
+    name: APIサポートセンター
+    url: http://www.example.com/support
+    email: support@example.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+- url: https://development.example.com
+  description: 開発環境
+- url: https://staging.example.com
+  description: 保守環境
+- url: https://{username}.example.com:{port}/v2
+  description: 本番環境
+  variables:
+    username:
+      default: taro
+      description: ユーザ名
+    port:
+      enum:
+        - '8443'
+        - '443'
+      default: '8443'
+      description: ポート番号
+paths:
+  /test/customer:
+    post:
+      summary: お客さま情報登録
+      description: お客さま情報を登録する
+      tags:
+        - customer
+      parameters:
+        - name: Content-Language
+          in: header
+          required: true
+          schema:
+            type: string
+            example: ja
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              example: あいうえお
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createCustomerInfo'
+      responses:
+        '200':
+          description: 正常系
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: メッセージ
+                    example: "Success"
+        '400':
+          description: エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    get:
+      summary: お客さま情報取得
+      description: お客さま情報を取得する
+      tags:
+        - customer
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: string
+            description: 会員ID
+            example: CUS0001
+        - name: mail
+          in: query
+          required: false
+          schema:
+            type: string
+            description: メールアドレス
+            example: sample@example.com
+      responses:
+        '200':
+          description: 正常系
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/createCustomerInfo'
+  /test/{id}:
+    get:
+      description: 商品情報を取得する
+      tags:
+        - item
+      security:
+        - Bearer: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            description: 商品ID
+            example: AA0001
+      responses:
+        '200':
+          description: 正常
+components:
+  schemas:
+    createCustomerInfo:
+      description: お客様情報
+      type: object
+      properties:
+        id:
+          type: string
+          description: 会員ID
+          example: AA001
+          maxLength: 10
+          format: ^[A-Za-z0-9]+$
+        name:
+          type: string
+          description: |
+            + 名前
+            + aaa
+          example: 鈴木太郎
+        mail:
+          type: string
+          description: メールアドレス
+          example: taro@co.jp
+        age:
+          type: number
+          description: 年齢
+          example: 30
+          maximum: 130
+          minimum: 20
+      required:
+        - id
+        - name
+        - mail
+    Error:
+      description: エラーオブジェクト
+      type: object
+      properties:
+        code:
+          type: string
+          description: エラーコード
+          example: E00301
+        message:
+          type: string
+          description: エラーメッセージ
+          example: IDは必須項目です
+  securitySchemes:
+    Bearer:
+      type: http
+      scheme: bearer
+      description: アクセストークン
+tags: 
+- name: customer
+  description: お客さま情報操作のAPIグループ
+  externalDocs: 
+    description: お客さま情報操作のAPIグループに関する追加情報
+    url: https://example.com
+- name: item
+  description: 商品情報操作のAPIグループ
+externalDocs:
+  description: APIに関する追加情報
+  url: https://example.com

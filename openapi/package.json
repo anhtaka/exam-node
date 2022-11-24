@@ -1,0 +1,13 @@
+{
+  "scripts": {
+    "swaggerMock": "prism mock 2.yaml"
+  },
+  "devDependencies": {
+    "mock": "^0.1.1",
+    "prism": "^4.1.2"
+  },
+  "dependencies": {
+    "@stoplight/prism-cli": "^4.10.5",
+    "redoc-cli": "^0.13.20"
+  }
+}

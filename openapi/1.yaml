@@ -1,0 +1,75 @@
+openapi: "3.0.3"
+
+info:
+  version: 0.0.1
+  title: My SampleData Api
+  license:
+    name: MIT
+servers:
+  - url: http://my.data.example.com/v1
+
+paths:
+  /logs:
+    get:
+      summary: List all logs
+      operationId: listLogs
+      tags:
+        - logs
+      responses:
+        '200':
+          description: Array of logs
+          content:
+            application/json:
+        default:
+          description: unexpected error
+          content:
+            application/json:
+    post:
+      summary: Create a log
+      operationId: createLog
+      tags:
+        - logs
+      responses:
+        '201':
+          description: Null response
+          headers:
+            location:
+              description: A link to the new log
+              schema:
+                type: string
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      summary: Update a log
+      operationId: putLogs
+      tags:
+        - logs
+  /logs/{date}:
+    get:
+      summary: Log for a specific date
+      operationId: showLogByDate
+      tags:
+        - logs
+      parameters:
+        - name: date
+          in: path
+          required: true
+          description: The date string formatted yyyy/MM/dd
+          schema:
+            type: string
+    delete:
+      summary: Delete log by date key
+      operationId: deleteLogByDate
+      tags:
+        - logs
+      parameters:
+        - name: date
+          in: path
+          required: true
+          description: The date string formatted yyyy/MM/dd
+          schema:
+            type: string
